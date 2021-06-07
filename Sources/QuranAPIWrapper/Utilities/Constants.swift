@@ -13,8 +13,8 @@ struct QuranAPIConstants {
 }
 
 enum Endpoint: String {
-    case chapters, juzs,
-         info
+    case chapters, juzs, verses,
+         info, by_chapter
 }
 
 enum Parameter: String {
