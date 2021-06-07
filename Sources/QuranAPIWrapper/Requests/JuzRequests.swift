@@ -16,41 +16,18 @@ public struct JuzRequests {
             return
         }
         
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            if let e = error {
-                print("Error fetching the list of juzs: \(e)")
-                completion(nil)
-                return
-            }
-            
-            if let data = data {
-                let jsonDecoder = JSONDecoder()
-                jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
-                
-                do {
-                    let juzsResponse = try jsonDecoder.decode(JuzListResponse.self, from: data)
-                    completion(juzsResponse.juzs)
-                } catch {
-                    print("Error decoding the list of juzs response: \(error)")
-                    completion(nil)
-                    return
-                }
-            }
-        }.resume()
+        RequestHelper.fetchRequest(for: url, ofType: JuzListResponse.self) { juzListResponse in
+            completion(juzListResponse?.juzs)
+        }
     }
     
     public static func getListOfJuzs() -> [Juz]? {
-        var isDone: Bool = false
-        var juzs: [Juz]?
-        getListOfJuzs { juzList in
-            if let juzList = juzList {
-                juzs = juzList
-            } else {
-                juzs = nil
-            }
-            isDone = true
+        guard let url = RequestHelper.constructURL(withResource: .juzs) else {
+            print("Error failed to construct the url for list of juzs")
+            return nil
         }
-        while !isDone {}
-        return juzs
+        
+        let response = RequestHelper.fetchRequest(for: url, ofType: JuzListResponse.self)
+        return response?.juzs
     }
 }

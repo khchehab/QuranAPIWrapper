@@ -16,42 +16,19 @@ public struct ChapterRequests {
             return
         }
         
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            if let e = error {
-                print("Error fetching the list of chapters: \(e)")
-                completion(nil)
-                return
-            }
-            
-            if let data = data {
-                let jsonDecoder = JSONDecoder()
-                jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
-                
-                do {
-                    let chaptersResponse = try jsonDecoder.decode(ChapterListResponse.self, from: data)
-                    completion(chaptersResponse.chapters)
-                } catch {
-                    print("Error decoding the list of chapters response: \(error)")
-                    completion(nil)
-                    return
-                }
-            }
-        }.resume()
+        RequestHelper.fetchRequest(for: url, ofType: ChapterListResponse.self) { chapterListResponse in
+            completion(chapterListResponse?.chapters)
+        }
     }
     
     public static func getListOfChapters(inTheLanguageOf language: String = "en") -> [Chapter]? {
-        var isDone: Bool = false
-        var chapters: [Chapter]?
-        getListOfChapters(inTheLanguageOf: language) { chapterList in
-            if let chapterList = chapterList {
-                chapters = chapterList
-            } else {
-                chapters = nil
-            }
-            isDone = true
+        guard let url = RequestHelper.constructURL(withResource: .chapters, andParameter: .language, withValueOf: language) else {
+            print("Error failed to construct the url for list of chapters")
+            return nil
         }
-        while !isDone {}
-        return chapters
+        
+        let response = RequestHelper.fetchRequest(for: url, ofType: ChapterListResponse.self)
+        return response?.chapters
     }
     
     // MARK: - Get Chapter
@@ -62,42 +39,19 @@ public struct ChapterRequests {
             return
         }
         
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            if let e = error {
-                print("Error fetching the chapter with id \(id): \(e)")
-                completion(nil)
-                return
-            }
-            
-            if let data = data {
-                let jsonDecoder = JSONDecoder()
-                jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
-                
-                do {
-                    let chapterResponse = try jsonDecoder.decode(ChapterResponse.self, from: data)
-                    completion(chapterResponse.chapter)
-                } catch {
-                    print("Error decoding the chapter with id \(id) response: \(error)")
-                    completion(nil)
-                    return
-                }
-            }
-        }.resume()
+        RequestHelper.fetchRequest(for: url, ofType: ChapterResponse.self) { chapterResponse in
+            completion(chapterResponse?.chapter)
+        }
     }
     
     public static func getChapter(forId id: Int, inTheLanguageOf language: String = "en") -> Chapter? {
-        var isDone: Bool = false
-        var chapter: Chapter?
-        getChapter(forId: id, inTheLanguageOf: language) { obtainedChapter in
-            if let obtainedChapter = obtainedChapter {
-                chapter = obtainedChapter
-            } else {
-                chapter = nil
-            }
-            isDone = true
+        guard let url = RequestHelper.constructURL(withResource: .chapters, andResourceId: id, andParameter: .language, withValueOf: language) else {
+            print("Error failed to construct the url the chapter with id \(id)")
+            return nil
         }
-        while !isDone {}
-        return chapter
+        
+        let response = RequestHelper.fetchRequest(for: url, ofType: ChapterResponse.self)
+        return response?.chapter
     }
     
     // MARK: - Chapter Info
@@ -108,41 +62,18 @@ public struct ChapterRequests {
             return
         }
         
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            if let e = error {
-                print("Error fetching the chapter information with id \(id): \(e)")
-                completion(nil)
-                return
-            }
-            
-            if let data = data {
-                let jsonDecoder = JSONDecoder()
-                jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
-                
-                do {
-                    let chapterInfoResponse = try jsonDecoder.decode(ChapterInfoResponse.self, from: data)
-                    completion(chapterInfoResponse.chapterInfo)
-                } catch {
-                    print("Error decoding the chapter information with id \(id) response: \(error)")
-                    completion(nil)
-                    return
-                }
-            }
-        }.resume()
+        RequestHelper.fetchRequest(for: url, ofType: ChapterInfoResponse.self) { chapterInfoResponse in
+            completion(chapterInfoResponse?.chapterInfo)
+        }
     }
     
     public static func getChapterInfo(forId id: Int, inTheLanguageOf language: String = "en") -> ChapterInfo? {
-        var isDone: Bool = false
-        var chapterInfo: ChapterInfo?
-        getChapterInfo(forId: id, inTheLanguageOf: language) { obtainedChapterInfo in
-            if let obtainedChapterInfo = obtainedChapterInfo {
-                chapterInfo = obtainedChapterInfo
-            } else {
-                chapterInfo = nil
-            }
-            isDone = true
+        guard let url = RequestHelper.constructURL(withResource: .chapters, andResourceId: id, andAdditionalResource: .info, andParameter: .language, withValueOf: language) else {
+            print("Error failed to construct the url the chapter information with id \(id)")
+            return nil
         }
-        while !isDone {}
-        return chapterInfo
+        
+        let response = RequestHelper.fetchRequest(for: url, ofType: ChapterInfoResponse.self)
+        return response?.chapterInfo
     }
 }
