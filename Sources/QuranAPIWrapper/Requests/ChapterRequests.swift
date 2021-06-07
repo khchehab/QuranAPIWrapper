@@ -8,7 +8,7 @@ import Foundation
 public struct ChapterRequests {
     private init() {}
     
-    // MARK: - List of Chapters
+    // MARK: - List Chapters
     public static func getListOfChapters(inTheLanguageOf language: String = "en", completion: @escaping ([Chapter]?) -> Void) {
         let urlString = "\(Constants.QuranAPI.baseUrl)\(Constants.QuranAPI.version)\(Constants.QuranAPI.Endpoints.chapters)?\(Constants.QuranAPI.Parameters.language)=\(language)"
         guard let url = URL(string: urlString) else {

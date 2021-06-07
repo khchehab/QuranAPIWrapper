@@ -25,7 +25,7 @@ public struct ChapterInfo: Decodable {
     let source: String
 }
 
-class ChapterListResponse: Decodable {
+struct ChapterListResponse: Decodable {
     let chapters: [Chapter]
 }
 

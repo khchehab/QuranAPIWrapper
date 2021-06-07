@@ -20,8 +20,11 @@ struct Constants {
             private init() {}
             
             static let chapters = "/chapters"
-            static let info = "/info"
             static let juzs = "/juzs"
+            static let resources = "/resources"
+            static let recitations = "/recitations"
+            
+            static let info = "/info"
         }
         
         struct Parameters {
