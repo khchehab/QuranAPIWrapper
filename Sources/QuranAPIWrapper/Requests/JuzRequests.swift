@@ -10,8 +10,7 @@ public struct JuzRequests {
     
     // MARK: - Get All Juzs
     public static func getListOfJuzs(completion: @escaping ([Juz]?) -> Void) {
-        let urlString = "\(Constants.QuranAPI.baseUrl)\(Constants.QuranAPI.version)\(Constants.QuranAPI.Endpoints.juzs)"
-        guard let url = URL(string: urlString) else {
+        guard let url = RequestHelper.constructURL(withResource: .juzs) else {
             print("Error failed to construct the url for list of juzs")
             completion(nil)
             return

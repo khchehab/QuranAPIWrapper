@@ -10,8 +10,7 @@ public struct ChapterRequests {
     
     // MARK: - List Chapters
     public static func getListOfChapters(inTheLanguageOf language: String = "en", completion: @escaping ([Chapter]?) -> Void) {
-        let urlString = "\(Constants.QuranAPI.baseUrl)\(Constants.QuranAPI.version)\(Constants.QuranAPI.Endpoints.chapters)?\(Constants.QuranAPI.Parameters.language)=\(language)"
-        guard let url = URL(string: urlString) else {
+        guard let url = RequestHelper.constructURL(withResource: .chapters, andParameter: .language, withValueOf: language) else {
             print("Error failed to construct the url for list of chapters")
             completion(nil)
             return
@@ -57,8 +56,7 @@ public struct ChapterRequests {
     
     // MARK: - Get Chapter
     public static func getChapter(forId id: Int, inTheLanguageOf language: String = "en", completion: @escaping (Chapter?) -> Void) {
-        let urlString = "\(Constants.QuranAPI.baseUrl)\(Constants.QuranAPI.version)\(Constants.QuranAPI.Endpoints.chapters)/\(id)?\(Constants.QuranAPI.Parameters.language)=\(language)"
-        guard let url = URL(string: urlString) else {
+        guard let url = RequestHelper.constructURL(withResource: .chapters, andResourceId: id, andParameter: .language, withValueOf: language) else {
             print("Error failed to construct the url the chapter with id \(id)")
             completion(nil)
             return
@@ -104,8 +102,7 @@ public struct ChapterRequests {
     
     // MARK: - Chapter Info
     public static func getChapterInfo(forId id: Int, inTheLanguageOf language: String = "en", completion: @escaping (ChapterInfo?) -> Void) {
-        let urlString = "\(Constants.QuranAPI.baseUrl)\(Constants.QuranAPI.version)\(Constants.QuranAPI.Endpoints.chapters)/\(id)\(Constants.QuranAPI.Endpoints.info)?\(Constants.QuranAPI.Parameters.language)=\(language)"
-        guard let url = URL(string: urlString) else {
+        guard let url = RequestHelper.constructURL(withResource: .chapters, andResourceId: id, andAdditionalResource: .info, andParameter: .language, withValueOf: language) else {
             print("Error failed to construct the url the chapter information with id \(id)")
             completion(nil)
             return
