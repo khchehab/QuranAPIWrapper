@@ -10,7 +10,7 @@ public struct ChapterRequests {
     
     // MARK: - List Chapters
     public static func getListOfChapters(inTheLanguageOf language: String = "en", completion: @escaping ([Chapter]?) -> Void) {
-        guard let url = RequestHelper.constructURL(withResource: .chapters, andParameter: .language, withValueOf: language) else {
+        guard let url = URLBuilder().add(resource: .chapters).add(queryString: .language, withValue: language).build() else {
             print("Error failed to construct the url for list of chapters")
             completion(nil)
             return
@@ -22,7 +22,7 @@ public struct ChapterRequests {
     }
     
     public static func getListOfChapters(inTheLanguageOf language: String = "en") -> [Chapter]? {
-        guard let url = RequestHelper.constructURL(withResource: .chapters, andParameter: .language, withValueOf: language) else {
+        guard let url = URLBuilder().add(resource: .chapters).add(queryString: .language, withValue: language).build() else {
             print("Error failed to construct the url for list of chapters")
             return nil
         }
@@ -33,7 +33,7 @@ public struct ChapterRequests {
     
     // MARK: - Get Chapter
     public static func getChapter(forId id: Int, inTheLanguageOf language: String = "en", completion: @escaping (Chapter?) -> Void) {
-        guard let url = RequestHelper.constructURL(withResource: .chapters, andResourceId: id, andParameter: .language, withValueOf: language) else {
+        guard let url = URLBuilder().add(resource: .chapters).add(resourceId: id).add(queryString: Parameter.language, withValue: language).build() else {
             print("Error failed to construct the url the chapter with id \(id)")
             completion(nil)
             return
@@ -45,7 +45,7 @@ public struct ChapterRequests {
     }
     
     public static func getChapter(forId id: Int, inTheLanguageOf language: String = "en") -> Chapter? {
-        guard let url = RequestHelper.constructURL(withResource: .chapters, andResourceId: id, andParameter: .language, withValueOf: language) else {
+        guard let url = URLBuilder().add(resource: .chapters).add(resourceId: id).add(queryString: Parameter.language, withValue: language).build() else {
             print("Error failed to construct the url the chapter with id \(id)")
             return nil
         }
@@ -56,7 +56,7 @@ public struct ChapterRequests {
     
     // MARK: - Chapter Info
     public static func getChapterInfo(forId id: Int, inTheLanguageOf language: String = "en", completion: @escaping (ChapterInfo?) -> Void) {
-        guard let url = RequestHelper.constructURL(withResource: .chapters, andResourceId: id, andAdditionalResource: .info, andParameter: .language, withValueOf: language) else {
+        guard let url = URLBuilder().add(resource: .chapters).add(resourceId: id).add(resource: .info).add(queryString: .language, withValue: language).build() else {
             print("Error failed to construct the url the chapter information with id \(id)")
             completion(nil)
             return
@@ -68,7 +68,7 @@ public struct ChapterRequests {
     }
     
     public static func getChapterInfo(forId id: Int, inTheLanguageOf language: String = "en") -> ChapterInfo? {
-        guard let url = RequestHelper.constructURL(withResource: .chapters, andResourceId: id, andAdditionalResource: .info, andParameter: .language, withValueOf: language) else {
+        guard let url = URLBuilder().add(resource: .chapters).add(resourceId: id).add(resource: .info).add(queryString: .language, withValue: language).build() else {
             print("Error failed to construct the url the chapter information with id \(id)")
             return nil
         }

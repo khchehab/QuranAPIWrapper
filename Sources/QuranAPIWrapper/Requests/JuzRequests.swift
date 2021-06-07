@@ -10,7 +10,7 @@ public struct JuzRequests {
     
     // MARK: - Get All Juzs
     public static func getListOfJuzs(completion: @escaping ([Juz]?) -> Void) {
-        guard let url = RequestHelper.constructURL(withResource: .juzs) else {
+        guard let url = URLBuilder().add(resource: .juzs).build() else {
             print("Error failed to construct the url for list of juzs")
             completion(nil)
             return
@@ -22,7 +22,7 @@ public struct JuzRequests {
     }
     
     public static func getListOfJuzs() -> [Juz]? {
-        guard let url = RequestHelper.constructURL(withResource: .juzs) else {
+        guard let url = URLBuilder().add(resource: .juzs).build() else {
             print("Error failed to construct the url for list of juzs")
             return nil
         }
