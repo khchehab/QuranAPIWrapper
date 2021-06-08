@@ -10,6 +10,9 @@ struct QuranAPIConstants {
     
     static let baseUrl = "https://api.quran.com/api"
     static let version = "/v4"
+    
+    static let chapterMinimumNumber = 1
+    static let chapterMaximumNumber = 114
 }
 
 enum Endpoint: String {

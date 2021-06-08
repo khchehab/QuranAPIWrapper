@@ -9,7 +9,7 @@ public struct ChapterRequests {
     private init() {}
     
     // MARK: - List Chapters
-    public static func getListOfChapters(inTheLanguageOf language: String = "en", completion: @escaping ([Chapter]?) -> Void) {
+    public static func getListOfChapters(inTheLanguageOf language: String? = nil, completion: @escaping ([Chapter]?) -> Void) {
         guard let url = URLBuilder().add(resource: .chapters).add(queryString: .language, withValue: language).build() else {
             print("Error failed to construct the url for list of chapters")
             completion(nil)
@@ -21,7 +21,7 @@ public struct ChapterRequests {
         }
     }
     
-    public static func getListOfChapters(inTheLanguageOf language: String = "en") -> [Chapter]? {
+    public static func getListOfChapters(inTheLanguageOf language: String? = nil) -> [Chapter]? {
         guard let url = URLBuilder().add(resource: .chapters).add(queryString: .language, withValue: language).build() else {
             print("Error failed to construct the url for list of chapters")
             return nil
@@ -32,7 +32,13 @@ public struct ChapterRequests {
     }
     
     // MARK: - Get Chapter
-    public static func getChapter(forId id: Int, inTheLanguageOf language: String = "en", completion: @escaping (Chapter?) -> Void) {
+    public static func getChapter(forId id: Int, inTheLanguageOf language: String? = nil, completion: @escaping (Chapter?) -> Void) {
+        if id < QuranAPIConstants.chapterMinimumNumber || id > QuranAPIConstants.chapterMaximumNumber {
+            print("Invalid id, it should be between [\(QuranAPIConstants.chapterMinimumNumber), \(QuranAPIConstants.chapterMaximumNumber)]")
+            completion(nil)
+            return
+        }
+        
         guard let url = URLBuilder().add(resource: .chapters).add(resourceId: id).add(queryString: Parameter.language, withValue: language).build() else {
             print("Error failed to construct the url the chapter with id \(id)")
             completion(nil)
@@ -44,7 +50,12 @@ public struct ChapterRequests {
         }
     }
     
-    public static func getChapter(forId id: Int, inTheLanguageOf language: String = "en") -> Chapter? {
+    public static func getChapter(forId id: Int, inTheLanguageOf language: String? = nil) -> Chapter? {
+        if id < QuranAPIConstants.chapterMinimumNumber || id > QuranAPIConstants.chapterMaximumNumber {
+            print("Invalid id, it should be between [\(QuranAPIConstants.chapterMinimumNumber), \(QuranAPIConstants.chapterMaximumNumber)]")
+            return nil
+        }
+        
         guard let url = URLBuilder().add(resource: .chapters).add(resourceId: id).add(queryString: Parameter.language, withValue: language).build() else {
             print("Error failed to construct the url the chapter with id \(id)")
             return nil
@@ -55,7 +66,13 @@ public struct ChapterRequests {
     }
     
     // MARK: - Chapter Info
-    public static func getChapterInfo(forId id: Int, inTheLanguageOf language: String = "en", completion: @escaping (ChapterInfo?) -> Void) {
+    public static func getChapterInfo(forId id: Int, inTheLanguageOf language: String? = nil, completion: @escaping (ChapterInfo?) -> Void) {
+        if id < QuranAPIConstants.chapterMinimumNumber || id > QuranAPIConstants.chapterMaximumNumber {
+            print("Invalid id, it should be between [\(QuranAPIConstants.chapterMinimumNumber), \(QuranAPIConstants.chapterMaximumNumber)]")
+            completion(nil)
+            return
+        }
+        
         guard let url = URLBuilder().add(resource: .chapters).add(resourceId: id).add(resource: .info).add(queryString: .language, withValue: language).build() else {
             print("Error failed to construct the url the chapter information with id \(id)")
             completion(nil)
@@ -67,7 +84,12 @@ public struct ChapterRequests {
         }
     }
     
-    public static func getChapterInfo(forId id: Int, inTheLanguageOf language: String = "en") -> ChapterInfo? {
+    public static func getChapterInfo(forId id: Int, inTheLanguageOf language: String? = nil) -> ChapterInfo? {
+        if id < QuranAPIConstants.chapterMinimumNumber || id > QuranAPIConstants.chapterMaximumNumber {
+            print("Invalid id, it should be between [\(QuranAPIConstants.chapterMinimumNumber), \(QuranAPIConstants.chapterMaximumNumber)]")
+            return nil
+        }
+        
         guard let url = URLBuilder().add(resource: .chapters).add(resourceId: id).add(resource: .info).add(queryString: .language, withValue: language).build() else {
             print("Error failed to construct the url the chapter information with id \(id)")
             return nil

@@ -70,13 +70,11 @@ class URLBuilder {
         return add(resource: String(resourceId))
     }
     
-    func add(queryString key: Parameter, withValue value: String) -> URLBuilder {
-        self.queryStringList[key.rawValue] = value
+    func add(queryString key: Parameter, withValue value: String?) -> URLBuilder {
+        if let value = value {
+            self.queryStringList[key.rawValue] = value
+        }
         return self
-    }
-    
-    func add(queryString key: Parameter, withValue value: Int) -> URLBuilder {
-        return add(queryString: key, withValue: String(value))
     }
     
     func build() -> URL? {
