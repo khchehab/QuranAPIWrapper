@@ -8,9 +8,15 @@ import Foundation
 public struct ChapterRequests {
     private init() {}
     
+    // TODO: Refactor the url building to include them in an enum with parameters in order not to repeat building the same url for async and sync functions
+    // for this request struct and the remaining requests
+    
     // MARK: - List Chapters
     public static func getListOfChapters(inTheLanguageOf language: String? = nil, completion: @escaping ([Chapter]?) -> Void) {
-        guard let url = URLBuilder().add(resource: .chapters).add(queryString: .language, withValue: language).build() else {
+        guard let url = URLBuilder()
+                .add(resource: .chapters)
+                .add(queryString: .language, withValue: language)
+                .build() else {
             print("Error failed to construct the url for list of chapters")
             completion(nil)
             return
@@ -22,7 +28,10 @@ public struct ChapterRequests {
     }
     
     public static func getListOfChapters(inTheLanguageOf language: String? = nil) -> [Chapter]? {
-        guard let url = URLBuilder().add(resource: .chapters).add(queryString: .language, withValue: language).build() else {
+        guard let url = URLBuilder()
+                .add(resource: .chapters)
+                .add(queryString: .language, withValue: language)
+                .build() else {
             print("Error failed to construct the url for list of chapters")
             return nil
         }
@@ -39,7 +48,11 @@ public struct ChapterRequests {
             return
         }
         
-        guard let url = URLBuilder().add(resource: .chapters).add(resourceId: id).add(queryString: Parameter.language, withValue: language).build() else {
+        guard let url = URLBuilder()
+                .add(resource: .chapters)
+                .add(resourceId: id)
+                .add(queryString: .language, withValue: language)
+                .build() else {
             print("Error failed to construct the url the chapter with id \(id)")
             completion(nil)
             return
@@ -56,7 +69,11 @@ public struct ChapterRequests {
             return nil
         }
         
-        guard let url = URLBuilder().add(resource: .chapters).add(resourceId: id).add(queryString: Parameter.language, withValue: language).build() else {
+        guard let url = URLBuilder()
+                .add(resource: .chapters)
+                .add(resourceId: id)
+                .add(queryString: .language, withValue: language)
+                .build() else {
             print("Error failed to construct the url the chapter with id \(id)")
             return nil
         }
@@ -73,7 +90,12 @@ public struct ChapterRequests {
             return
         }
         
-        guard let url = URLBuilder().add(resource: .chapters).add(resourceId: id).add(resource: .info).add(queryString: .language, withValue: language).build() else {
+        guard let url = URLBuilder()
+                .add(resource: .chapters)
+                .add(resourceId: id)
+                .add(resource: .info)
+                .add(queryString: .language, withValue: language)
+                .build() else {
             print("Error failed to construct the url the chapter information with id \(id)")
             completion(nil)
             return
@@ -90,7 +112,12 @@ public struct ChapterRequests {
             return nil
         }
         
-        guard let url = URLBuilder().add(resource: .chapters).add(resourceId: id).add(resource: .info).add(queryString: .language, withValue: language).build() else {
+        guard let url = URLBuilder()
+                .add(resource: .chapters)
+                .add(resourceId: id)
+                .add(resource: .info)
+                .add(queryString: .language, withValue: language)
+                .build() else {
             print("Error failed to construct the url the chapter information with id \(id)")
             return nil
         }
