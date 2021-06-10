@@ -8,7 +8,13 @@ import Foundation
 struct RequestHelper {
     private init() {}
     
-    static func fetchRequest<T: Decodable>(for url: URL, ofType type: T.Type, completion: @escaping (T?) -> Void) {
+    static func fetchRequest<T: Decodable>(for url: Urlable, ofType type: T.Type, completion: @escaping (T?) -> Void) {
+        guard let url = url.url() else {
+            print("Error failed to construct the url")
+            completion(nil)
+            return
+        }
+        
         URLSession.shared.dataTask(with: url) { data, response, error in
             if let e = error {
                 print("Error fetching the request for url \(url): \(e)")
@@ -32,7 +38,7 @@ struct RequestHelper {
         }.resume()
     }
     
-    static func fetchRequest<T: Decodable>(for url: URL, ofType type: T.Type) -> T? {
+    static func fetchRequest<T: Decodable>(for url: Urlable, ofType type: T.Type) -> T? {
         var isDone: Bool = false
         var response: T?
         fetchRequest(for: url, ofType: type) { obtainedResponse in
@@ -57,7 +63,7 @@ class URLBuilder {
         self.queryStringList = [String: String]()
     }
     
-    func add(resource: String) -> URLBuilder {
+    private func add(resource: String) -> URLBuilder {
         self.resourceList.append(resource)
         return self
     }

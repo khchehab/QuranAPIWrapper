@@ -13,11 +13,13 @@ struct QuranAPIConstants {
     
     static let chapterMinimumNumber = 1
     static let chapterMaximumNumber = 114
+    
+    static let urlPlaceholder = "%"
 }
 
 enum Endpoint: String {
     case chapters, juzs, verses,
-         info, by_chapter
+         info
 }
 
 enum Parameter: String {

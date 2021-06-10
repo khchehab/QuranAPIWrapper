@@ -13,30 +13,13 @@ public struct ChapterRequests {
     
     // MARK: - List Chapters
     public static func getListOfChapters(inTheLanguageOf language: String? = nil, completion: @escaping ([Chapter]?) -> Void) {
-        guard let url = URLBuilder()
-                .add(resource: .chapters)
-                .add(queryString: .language, withValue: language)
-                .build() else {
-            print("Error failed to construct the url for list of chapters")
-            completion(nil)
-            return
-        }
-        
-        RequestHelper.fetchRequest(for: url, ofType: ChapterListResponse.self) { chapterListResponse in
+        RequestHelper.fetchRequest(for: ChapterURL.chapterList(withLanguage: language), ofType: ChapterListResponse.self) { chapterListResponse in
             completion(chapterListResponse?.chapters)
         }
     }
     
     public static func getListOfChapters(inTheLanguageOf language: String? = nil) -> [Chapter]? {
-        guard let url = URLBuilder()
-                .add(resource: .chapters)
-                .add(queryString: .language, withValue: language)
-                .build() else {
-            print("Error failed to construct the url for list of chapters")
-            return nil
-        }
-        
-        let response = RequestHelper.fetchRequest(for: url, ofType: ChapterListResponse.self)
+        let response = RequestHelper.fetchRequest(for: ChapterURL.chapterList(withLanguage: language), ofType: ChapterListResponse.self)
         return response?.chapters
     }
     
@@ -48,17 +31,7 @@ public struct ChapterRequests {
             return
         }
         
-        guard let url = URLBuilder()
-                .add(resource: .chapters)
-                .add(resourceId: id)
-                .add(queryString: .language, withValue: language)
-                .build() else {
-            print("Error failed to construct the url the chapter with id \(id)")
-            completion(nil)
-            return
-        }
-        
-        RequestHelper.fetchRequest(for: url, ofType: ChapterResponse.self) { chapterResponse in
+        RequestHelper.fetchRequest(for: ChapterURL.chapter(withId: id, andLanguage: language), ofType: ChapterResponse.self) { chapterResponse in
             completion(chapterResponse?.chapter)
         }
     }
@@ -69,16 +42,7 @@ public struct ChapterRequests {
             return nil
         }
         
-        guard let url = URLBuilder()
-                .add(resource: .chapters)
-                .add(resourceId: id)
-                .add(queryString: .language, withValue: language)
-                .build() else {
-            print("Error failed to construct the url the chapter with id \(id)")
-            return nil
-        }
-        
-        let response = RequestHelper.fetchRequest(for: url, ofType: ChapterResponse.self)
+        let response = RequestHelper.fetchRequest(for: ChapterURL.chapter(withId: id, andLanguage: language), ofType: ChapterResponse.self)
         return response?.chapter
     }
     
@@ -90,18 +54,7 @@ public struct ChapterRequests {
             return
         }
         
-        guard let url = URLBuilder()
-                .add(resource: .chapters)
-                .add(resourceId: id)
-                .add(resource: .info)
-                .add(queryString: .language, withValue: language)
-                .build() else {
-            print("Error failed to construct the url the chapter information with id \(id)")
-            completion(nil)
-            return
-        }
-        
-        RequestHelper.fetchRequest(for: url, ofType: ChapterInfoResponse.self) { chapterInfoResponse in
+        RequestHelper.fetchRequest(for: ChapterURL.chapterInfo(withId: id, andLanguage: language), ofType: ChapterInfoResponse.self) { chapterInfoResponse in
             completion(chapterInfoResponse?.chapterInfo)
         }
     }
@@ -112,17 +65,7 @@ public struct ChapterRequests {
             return nil
         }
         
-        guard let url = URLBuilder()
-                .add(resource: .chapters)
-                .add(resourceId: id)
-                .add(resource: .info)
-                .add(queryString: .language, withValue: language)
-                .build() else {
-            print("Error failed to construct the url the chapter information with id \(id)")
-            return nil
-        }
-        
-        let response = RequestHelper.fetchRequest(for: url, ofType: ChapterInfoResponse.self)
+        let response = RequestHelper.fetchRequest(for: ChapterURL.chapterInfo(withId: id, andLanguage: language), ofType: ChapterInfoResponse.self)
         return response?.chapterInfo
     }
 }
