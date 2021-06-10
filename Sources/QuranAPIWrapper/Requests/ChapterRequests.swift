@@ -8,9 +8,6 @@ import Foundation
 public struct ChapterRequests {
     private init() {}
     
-    // TODO: Refactor the url building to include them in an enum with parameters in order not to repeat building the same url for async and sync functions
-    // for this request struct and the remaining requests
-    
     // MARK: - List Chapters
     public static func getListOfChapters(inTheLanguageOf language: String? = nil, completion: @escaping ([Chapter]?) -> Void) {
         RequestHelper.fetchRequest(for: ChapterURL.chapterList(withLanguage: language), ofType: ChapterListResponse.self) { chapterListResponse in
