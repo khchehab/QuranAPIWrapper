@@ -10,185 +10,58 @@ import QuranAPIWrapper
 
 class ChapterInfoInfoTests: XCTestCase {
     private let chapterInfoListTimeout = 10.0
-
-    func testChapterInfoWithIdOneDefaultLanguageParameterAsync() throws {
-        let expectation = self.expectation(description: "ChapterInfoWithIdOneDefaultLanguageParameterAsync")
+    
+    func testChapterInfoExhaustive() throws {
+        let syncValues: [(value: Bool, name: String)] = [(true, "Async"), (false, "Sync")]
+        let languages: [(code: String?, name: String)] = [(nil, "Default"), ("en", "English"), ("ar", "Arabic")]
+        let assertMessages: [String] = ["Could not find chapter info with id", "There should not be a chapter info with id"]
+        var expectationDescription: String
+        var assertMessage: String
+        var assertNil: Bool
+        
+        for (syncMode, syncName) in syncValues {
+            for (code, name) in languages {
+                for id in -1...115 {
+                    assertNil = id < 1 || id > 114
+                    expectationDescription = "ChapterInfoWithId\(id)\(name)Language\(syncName)"
+                    assertMessage = "\(assertNil ? assertMessages[1] : assertMessages[0]) \(id)"
+                    
+                    if syncMode {
+                        try testAsyncChapterInfo(withId: id, andLanguage: code, andExpectationDescription: expectationDescription, shouldAssertNil: assertNil, withAssertMessage: assertMessage)
+                    } else {
+                        try testSyncChapterInfo(withId: id, andLanguage: code, shouldAssertNil: assertNil, withAssertMessage: assertMessage)
+                    }
+                }
+            }
+        }
+    }
+    
+    private func testAsyncChapterInfo(withId id: Int, andLanguage language: String? = nil, andExpectationDescription description: String, shouldAssertNil assertNil: Bool, withAssertMessage message: String) throws {
+        let expectation = self.expectation(description: description)
         var chapterInfo: ChapterInfo?
-
-        ChapterRequests.getChapterInfo(forId: 1) { obtainedChapterInfo in
+        
+        ChapterRequests.getChapterInfo(forId: id, inTheLanguageOf: language) { obtainedChapterInfo in
             chapterInfo = obtainedChapterInfo
             expectation.fulfill()
         }
-
+        
         waitForExpectations(timeout: chapterInfoListTimeout, handler: nil)
-        XCTAssertNotNil(chapterInfo, "Could not find chapterInfo with id 1")
-    }
-    
-    func testChapterInfoWithIdOneHundredAndFourteenDefaultLanguageParameterAsync() throws {
-        let expectation = self.expectation(description: "ChapterInfoWithIdOneHundredAndFourteenDefaultLanguageParameterAsync")
-        var chapterInfo: ChapterInfo?
-
-        ChapterRequests.getChapterInfo(forId: 114) { obtainedChapterInfo in
-            chapterInfo = obtainedChapterInfo
-            expectation.fulfill()
+        
+        if assertNil {
+            XCTAssertNil(chapterInfo, message)
+        } else {
+            XCTAssertNotNil(chapterInfo, message)
         }
-
-        waitForExpectations(timeout: chapterInfoListTimeout, handler: nil)
-        XCTAssertNotNil(chapterInfo, "Could not find chapterInfo with id 114")
     }
     
-    func testChapterInfoWithExistingIdDefaultLanguageParameterAsync() throws {
-        let expectation = self.expectation(description: "ChapterInfoWithExistingIdDefaultLanguageParameterAsync")
-        var chapterInfo: ChapterInfo?
-
-        ChapterRequests.getChapterInfo(forId: 20) { obtainedChapterInfo in
-            chapterInfo = obtainedChapterInfo
-            expectation.fulfill()
+    private func testSyncChapterInfo(withId id: Int, andLanguage language: String? = nil, shouldAssertNil assertNil: Bool, withAssertMessage message: String) throws {
+        let chapterInfo: ChapterInfo? = ChapterRequests.getChapterInfo(forId: id, inTheLanguageOf: language)
+        
+        if assertNil {
+            XCTAssertNil(chapterInfo, message)
+        } else {
+            XCTAssertNotNil(chapterInfo, message)
         }
-
-        waitForExpectations(timeout: chapterInfoListTimeout, handler: nil)
-        XCTAssertNotNil(chapterInfo, "Could not find chapterInfo with id 20")
-    }
-    
-    func testChapterInfoWithIdOneEnglishLanguageAsync() throws {
-        let expectation = self.expectation(description: "ChapterInfoWithIdOneEnglishLanguageAsync")
-        var chapterInfo: ChapterInfo?
-
-        ChapterRequests.getChapterInfo(forId: 1, inTheLanguageOf: "en") { obtainedChapterInfo in
-            chapterInfo = obtainedChapterInfo
-            expectation.fulfill()
-        }
-
-        waitForExpectations(timeout: chapterInfoListTimeout, handler: nil)
-        XCTAssertNotNil(chapterInfo, "Could not find chapterInfo with id 1")
-    }
-    
-    func testChapterInfoWithIdOneArabicLanguageAsync() throws {
-        let expectation = self.expectation(description: "ChapterInfoWithIdOneArabicLanguageAsync")
-        var chapterInfo: ChapterInfo?
-
-        ChapterRequests.getChapterInfo(forId: 1, inTheLanguageOf: "ar") { obtainedChapterInfo in
-            chapterInfo = obtainedChapterInfo
-            expectation.fulfill()
-        }
-
-        waitForExpectations(timeout: chapterInfoListTimeout, handler: nil)
-        XCTAssertNotNil(chapterInfo, "Could not find chapterInfo with id 1")
-    }
-    
-    func testChapterInfoWithIdZeroDefaultLanguageParameterAsync() throws {
-        let expectation = self.expectation(description: "ChapterInfoWithIdZeroDefaultLanguageParameterAsync")
-        var chapterInfo: ChapterInfo?
-
-        ChapterRequests.getChapterInfo(forId: 0) { obtainedChapterInfo in
-            chapterInfo = obtainedChapterInfo
-            expectation.fulfill()
-        }
-
-        waitForExpectations(timeout: chapterInfoListTimeout, handler: nil)
-        XCTAssertNil(chapterInfo, "There should not be a chapterInfo with id 0")
-    }
-    
-    func testChapterInfoWithIdNegativeDefaultLanguageParameterAsync() throws {
-        let expectation = self.expectation(description: "ChapterInfoWithIdNegativeDefaultLanguageParameterAsync")
-        var chapterInfo: ChapterInfo?
-
-        ChapterRequests.getChapterInfo(forId: -1) { obtainedChapterInfo in
-            chapterInfo = obtainedChapterInfo
-            expectation.fulfill()
-        }
-
-        waitForExpectations(timeout: chapterInfoListTimeout, handler: nil)
-        XCTAssertNil(chapterInfo, "There should not be a chapterInfo with negative id")
-    }
-    
-    func testChapterInfoWithIdGreaterThanOneHundredAndFourteenDefaultLanguageParameterAsync() throws {
-        let expectation = self.expectation(description: "ChapterInfoWithIdGreaterThanOneHundredAndFourteenDefaultLanguageParameterAsync")
-        var chapterInfo: ChapterInfo?
-
-        ChapterRequests.getChapterInfo(forId: 115) { obtainedChapterInfo in
-            chapterInfo = obtainedChapterInfo
-            expectation.fulfill()
-        }
-
-        waitForExpectations(timeout: chapterInfoListTimeout, handler: nil)
-        XCTAssertNil(chapterInfo, "There should not be a chapterInfo with id greater than 114")
-    }
-    
-    func testChapterInfoWithIdZeroEnglishLanguageAsync() throws {
-        let expectation = self.expectation(description: "ChapterInfoWithIdZeroEnglishLanguageAsync")
-        var chapterInfo: ChapterInfo?
-
-        ChapterRequests.getChapterInfo(forId: 0, inTheLanguageOf: "en") { obtainedChapterInfo in
-            chapterInfo = obtainedChapterInfo
-            expectation.fulfill()
-        }
-
-        waitForExpectations(timeout: chapterInfoListTimeout, handler: nil)
-        XCTAssertNil(chapterInfo, "There should not be a chapterInfo with id 0")
-    }
-    
-    func testChapterInfoWithIdZeroArabicLanguageAsync() throws {
-        let expectation = self.expectation(description: "ChapterInfoWithIdZeroArabicLanguageAsync")
-        var chapterInfo: ChapterInfo?
-
-        ChapterRequests.getChapterInfo(forId: 0, inTheLanguageOf: "ar") { obtainedChapterInfo in
-            chapterInfo = obtainedChapterInfo
-            expectation.fulfill()
-        }
-
-        waitForExpectations(timeout: chapterInfoListTimeout, handler: nil)
-        XCTAssertNil(chapterInfo, "There should not be a chapterInfo with id 0")
-    }
-    
-    func testChapterInfoWithIdOneDefaultLanguageParameterSync() throws {
-        let chapterInfo: ChapterInfo? = ChapterRequests.getChapterInfo(forId: 1)
-        XCTAssertNotNil(chapterInfo, "Could not find chapterInfo with id 1")
-    }
-    
-    func testChapterInfoWithIdOneHundredAndFourteenDefaultLanguageParameterSync() throws {
-        let chapterInfo: ChapterInfo? = ChapterRequests.getChapterInfo(forId: 114)
-        XCTAssertNotNil(chapterInfo, "Could not find chapterInfo with id 114")
-    }
-    
-    func testChapterInfoWithExistingIdDefaultLanguageParameterSync() throws {
-        let chapterInfo: ChapterInfo? = ChapterRequests.getChapterInfo(forId: 20)
-        XCTAssertNotNil(chapterInfo, "Could not find chapterInfo with id 20")
-    }
-    
-    func testChapterInfoWithIdOneEnglishLanguageSync() throws {
-        let chapterInfo: ChapterInfo? = ChapterRequests.getChapterInfo(forId: 1, inTheLanguageOf: "en")
-        XCTAssertNotNil(chapterInfo, "Could not find chapterInfo with id 1")
-    }
-    
-    func testChapterInfoWithIdOneArabicLanguageSync() throws {
-        let chapterInfo: ChapterInfo? = ChapterRequests.getChapterInfo(forId: 1, inTheLanguageOf: "ar")
-        XCTAssertNotNil(chapterInfo, "Could not find chapterInfo with id 1")
-    }
-    
-    func testChapterInfoWithIdZeroDefaultLanguageParameterSync() throws {
-        let chapterInfo: ChapterInfo? = ChapterRequests.getChapterInfo(forId: 0)
-        XCTAssertNil(chapterInfo, "There should not be a chapterInfo with id 0")
-    }
-    
-    func testChapterInfoWithIdNegativeDefaultLanguageParameterSync() throws {
-        let chapterInfo: ChapterInfo? = ChapterRequests.getChapterInfo(forId: -1)
-        XCTAssertNil(chapterInfo, "There should not be a chapterInfo with negative id")
-    }
-    
-    func testChapterInfoWithIdGreaterThanOneHundredAndFourteenDefaultLanguageParameterSync() throws {
-        let chapterInfo: ChapterInfo? = ChapterRequests.getChapterInfo(forId: 115)
-        XCTAssertNil(chapterInfo, "There should not be a chapterInfo with id greater than 114")
-    }
-    
-    func testChapterInfoWithIdZeroEnglishLanguageSync() throws {
-        let chapterInfo: ChapterInfo? = ChapterRequests.getChapterInfo(forId: 0, inTheLanguageOf: "en")
-        XCTAssertNil(chapterInfo, "There should not be a chapterInfo with id 0")
-    }
-    
-    func testChapterInfoWithIdZeroArabicLanguageSync() throws {
-        let chapterInfo: ChapterInfo? = ChapterRequests.getChapterInfo(forId: 0, inTheLanguageOf: "ar")
-        XCTAssertNil(chapterInfo, "There should not be a chapterInfo with id 0")
     }
 
 }

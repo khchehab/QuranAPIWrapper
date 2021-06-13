@@ -12,12 +12,30 @@ class ChapterListTests: XCTestCase {
     private let chapterListCountExpected = 114
     private let chapterListTimeout = 10.0
     
-    func testListOfChaptersDefaultLanguageParameterAsync() throws {
-        let expectation = self.expectation(description: "ListOfChaptersDefaultLanguageParameterAsync")
+    func testListOfChaptersExhaustive() throws {
+        let syncValues: [(value: Bool, name: String)] = [(true, "Async"), (false, "Sync")]
+        let languages: [(code: String?, name: String)] = [(nil, "Default"), ("en", "English"), ("ar", "Arabic")]
+        var expectationDescription: String
+        
+        for (syncMode, syncName) in syncValues {
+            for (code, name) in languages {
+                expectationDescription = "ListOfChapters\(name)Language\(syncName)"
+                
+                if syncMode {
+                    try testAsyncListOfChapters(inTheLanguageOf: code, andExpectationDescription: expectationDescription)
+                } else {
+                    try testSyncListOfChapters(inTheLanguageOf: code)
+                }
+            }
+        }
+    }
+    
+    private func testAsyncListOfChapters(inTheLanguageOf language: String? = nil, andExpectationDescription description: String) throws {
+        let expectation = self.expectation(description: description)
         var chapters: [Chapter]?
         
-        ChapterRequests.getListOfChapters { chapterList in
-            chapters = chapterList
+        ChapterRequests.getListOfChapters(inTheLanguageOf: language) { obtainedChapters in
+            chapters = obtainedChapters
             expectation.fulfill()
         }
         
@@ -25,44 +43,8 @@ class ChapterListTests: XCTestCase {
         XCTAssertEqual(chapters?.count, chapterListCountExpected, "Wrong number of chapters")
     }
     
-    func testListOfChaptersEnglishLanguageAsync() throws {
-        let expectation = self.expectation(description: "ListOfChaptersEnglishLanguageAsync")
-        var chapters: [Chapter]?
-        
-        ChapterRequests.getListOfChapters(inTheLanguageOf: "en") { chapterList in
-            chapters = chapterList
-            expectation.fulfill()
-        }
-        
-        waitForExpectations(timeout: chapterListTimeout, handler: nil)
-        XCTAssertEqual(chapters?.count, chapterListCountExpected, "Wrong number of chapters")
-    }
-    
-    func testListOfChaptersArabicLanguageAsync() throws {
-        let expectation = self.expectation(description: "ListOfChaptersArabicLanguageAsync")
-        var chapters: [Chapter]?
-        
-        ChapterRequests.getListOfChapters(inTheLanguageOf: "ar") { chapterList in
-            chapters = chapterList
-            expectation.fulfill()
-        }
-        
-        waitForExpectations(timeout: chapterListTimeout, handler: nil)
-        XCTAssertEqual(chapters?.count, chapterListCountExpected, "Wrong number of chapters")
-    }
-    
-    func testListOfChaptersDefaultLanguageParameterSync() throws {
-        let chapters = ChapterRequests.getListOfChapters()
-        XCTAssertEqual(chapters?.count, chapterListCountExpected, "Wrong number of chapters")
-    }
-    
-    func testListOfChaptersEnglishLanguageSync() throws {
-        let chapters = ChapterRequests.getListOfChapters(inTheLanguageOf: "en")
-        XCTAssertEqual(chapters?.count, chapterListCountExpected, "Wrong number of chapters")
-    }
-    
-    func testListOfChaptersArabicLanguageSync() throws {
-        let chapters = ChapterRequests.getListOfChapters(inTheLanguageOf: "ar")
+    private func testSyncListOfChapters(inTheLanguageOf language: String? = nil) throws {
+        let chapters: [Chapter]? = ChapterRequests.getListOfChapters(inTheLanguageOf: language)
         XCTAssertEqual(chapters?.count, chapterListCountExpected, "Wrong number of chapters")
     }
 
